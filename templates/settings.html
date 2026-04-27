@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings – Bookmark Manager</title>
+  <link rel="icon" type="image/svg+xml" href="/static/icon.svg" />
+  <link rel="apple-touch-icon" href="/static/icon.svg" />
+  <meta name="theme-color" content="#1a1d27" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-brand">
+    <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+    </svg>
+    <span>Settings</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-secondary" onclick="window.location.href='/'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+      </svg>
+      Home
+    </button>
+    <button class="btn btn-secondary" onclick="window.location.href='/about'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><circle cx="12" cy="16" r="1"/>
+      </svg>
+      About
+    </button>
+  </div>
+</header>
+<main id="main">
+  <section class="group-section">
+    <div class="group-header">
+      <div>
+        <h1 style="margin:0; font-size:1.6rem;">Settings</h1>
+        <p style="margin:.5rem 0 0; color: var(--text-muted); max-width: 720px; line-height:1.6;">
+          Manage import and export settings for your bookmark collection.
+        </p>
+      </div>
+    </div>
+
+    <div class="tile-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+      <div class="tile" style="padding: 1.25rem; align-items: flex-start;">
+        <h2>Import bookmarks</h2>
+        <p style="margin:.75rem 0 1rem; color: var(--text); line-height:1.6;">
+          Upload a browser bookmark HTML file to import groups and bookmarks into the app.
+        </p>
+        <button class="btn btn-primary" type="button" onclick="document.getElementById('fileInput').click()">Import Bookmarks HTML</button>
+        <input type="file" id="fileInput" accept=".html" style="display:none" onchange="handleImportFile(this)" />
+      </div>
+
+      <div class="tile" style="padding: 1.25rem; align-items: flex-start;">
+        <h2>Export bookmarks</h2>
+        <p style="margin:.75rem 0 1rem; color: var(--text); line-height:1.6;">
+          Download your current bookmark collection as a JSON backup file.
+        </p>
+        <a class="btn btn-secondary" href="/export-bookmarks">Export bookmarks</a>
+        <p style="margin:.75rem 0 0; color: var(--text-muted); font-size:.9rem;">
+          Export URL: <code style="display:block; margin-top:.4rem; padding:.6rem .8rem; background: #12131a; border: 1px solid var(--border); border-radius: 8px;">/export-bookmarks</code>
+        </p>
+      </div>
+      <div class="tile" style="padding: 1.25rem; align-items: flex-start;">
+        <h2>Clean duplicates</h2>
+        <p style="margin:.75rem 0 1rem; color: var(--text); line-height:1.6;">
+          Remove duplicate bookmarks with the same URL across groups and within groups.
+        </p>
+        <button class="btn btn-danger" id="btnCleanDuplicates">Delete duplicates</button>
+        <p id="duplicateResult" style="margin:.75rem 0 0; color: var(--text-muted); font-size:.9rem;">
+          No duplicates removed yet.
+        </p>
+        <p style="margin:.5rem 0 0; color: var(--text-muted); font-size:.9rem;">
+          This will keep the first occurrence and remove later duplicates.
+        </p>
+      </div>
+      <div class="tile" style="padding: 1.25rem; align-items: flex-start;">
+        <h2>Remove empty groups</h2>
+        <p style="margin:.75rem 0 1rem; color: var(--text); line-height:1.6;">
+          Delete any groups that do not currently contain bookmarks.
+        </p>
+        <button class="btn btn-danger" id="btnDeleteEmptyGroups">Delete empty groups</button>
+        <p id="emptyGroupResult" style="margin:.75rem 0 0; color: var(--text-muted); font-size:.9rem;">
+          No empty groups removed yet.
+        </p>
+        <p style="margin:.5rem 0 0; color: var(--text-muted); font-size:.9rem;">
+          This removes groups that have zero bookmarks left behind.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="toast" class="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script src="/static/js/app.js"></script>
+<script>
+async function handleImportFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await fetch('/api/import', { method: 'POST', body: formData });
+    const json = await response.json();
+    if (!response.ok) throw new Error(json.error || response.statusText);
+    showToast(`Imported ${json.imported_groups} group(s) and ${json.imported_bookmarks} bookmark(s)`, 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    input.value = '';
+  }
+}
+
+async function cleanDuplicatesInline() {
+  try {
+    const response = await fetch('/api/clean-duplicates', { method: 'POST' });
+    const json = await response.json();
+    if (!response.ok) throw new Error(json.error || response.statusText);
+
+    const message = `Removed ${json.removed} duplicate(s)`;
+    const resultEl = document.getElementById('duplicateResult');
+    if (resultEl) resultEl.textContent = message;
+    showToast(message, 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+async function deleteEmptyGroupsInline() {
+  try {
+    const response = await fetch('/api/delete-empty-groups', { method: 'POST' });
+    const json = await response.json();
+    if (!response.ok) throw new Error(json.error || response.statusText);
+
+    const message = `Deleted ${json.deleted} empty group(s)`;
+    const resultEl = document.getElementById('emptyGroupResult');
+    if (resultEl) resultEl.textContent = message;
+    showToast(message, 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+document.getElementById('btnCleanDuplicates')?.addEventListener('click', cleanDuplicatesInline);
+document.getElementById('btnDeleteEmptyGroups')?.addEventListener('click', deleteEmptyGroupsInline);
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Bookmark Manager</title>
+  <link rel="icon" type="image/svg+xml" href="/static/icon.svg" />
+  <link rel="apple-touch-icon" href="/static/icon.svg" />
+  <meta name="theme-color" content="#1a1d27" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <main id="main">
+    <section class="group-section">
+      <div class="group-header">
+        <div>
+          <h1 style="margin:0; font-size:1.8rem;">About Bookmark Manager</h1>
+          <p style="margin:.5rem 0 0; color: var(--text-muted); max-width: 680px; line-height:1.6;">
+            This app imports browser bookmark HTML files, organizes them into groups, and
+            displays bookmarks as searchable tiles.
+          </p>
+        </div>
+      </div>
+
+      <div class="tile-grid" style="grid-template-columns: 1fr; gap: 1rem; margin-top:1rem;">
+        <div class="tile" style="padding: 1.5rem; align-items: flex-start;">
+          <img src="/static/icon.svg" alt="App icon" style="width:96px; height:96px; margin-bottom:1rem; border-radius:18px;" />
+          <p style="margin:0 0 .75rem; font-size:.95rem; color: var(--text);">
+            Download the app icon using the URL below. It is available as an SVG file for easy use in your own projects.
+          </p>
+          <a class="btn btn-primary" href="{{ url_for('download_icon') }}">Download icon</a>
+          <p style="margin:.75rem 0 0; color: var(--text-muted); font-size:.9rem;">
+            Direct download URL:
+            <code style="display:block; margin-top:.4rem; padding:.6rem .8rem; background: #12131a; border: 1px solid var(--border); border-radius: 8px;">
+              {{ url_for('download_icon', _external=True) }}
+            </code>
+          </p>
+        </div>
+
+        <div class="tile" style="padding: 1.5rem; align-items: flex-start;">
+          <h2 style="margin-top:0;">Usage</h2>
+          <ul style="margin:.6rem 0 0 1.1rem; color: var(--text); line-height:1.7;">
+            <li>Go back to the home page using the button below.</li>
+            <li>Import your browser bookmark HTML file to populate groups.</li>
+            <li>Use the search bar to filter bookmarks instantly.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="justify-content: flex-start; margin-top: 1.5rem; padding: 0; background: transparent; box-shadow: none;">
+        <button class="btn btn-secondary" onclick="window.location.href='/'">Back to home</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

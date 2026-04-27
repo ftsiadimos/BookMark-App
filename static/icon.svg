@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img">
+  <title>Bookmark Manager</title>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6c63ff" />
+      <stop offset="100%" stop-color="#4facfe" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="100" height="100" x="10" y="10" rx="24" ry="24" fill="url(#grad)" filter="url(#shadow)" />
+  <path d="M36 30h48a8 8 0 0 1 8 8v56a4 4 0 0 1-6.4 3.2L60 75.6l-25.6 21.6A4 4 0 0 1 28 88V38a8 8 0 0 1 8-8z" fill="#fff" />
+  <path d="M36 30h48a8 8 0 0 1 8 8v56a4 4 0 0 1-6.4 3.2L60 75.6l-25.6 21.6A4 4 0 0 1 28 88V38a8 8 0 0 1 8-8z" fill="none" stroke="#c0c2ff" stroke-width="4" />
+  <path d="M54 40h12v22l-6-4-6 4V40Z" fill="#6c63ff" opacity="0.95" />
+</svg>

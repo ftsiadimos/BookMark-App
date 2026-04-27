@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookmark Manager</title>
+  <link rel="icon" type="image/svg+xml" href="/static/icon.svg" />
+  <link rel="apple-touch-icon" href="/static/icon.svg" />
+  <meta name="theme-color" content="#1a1d27" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ── Top Bar ──────────────────────────────────────────────────────────── -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+    </svg>
+    <span>Bookmark Manager</span>
+  </div>
+  <div class="topbar-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input id="searchInput" type="text" placeholder="Search bookmarks or categories…" autocomplete="off" />
+    <select id="searchMode" aria-label="Search mode">
+      <option value="both">Bookmarks + Categories</option>
+      <option value="bookmarks">Bookmarks only</option>
+      <option value="categories">Categories only</option>
+    </select>
+    <button id="clearSearch" class="btn-icon" title="Clear" style="display:none">✕</button>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-secondary" id="btnToggleGroups">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 9l6 6 6-6"/>
+      </svg>
+      <span>Collapse all</span>
+    </button>
+    <button class="btn btn-secondary" id="btnSelectionMode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14"/><path d="M12 5l7 7-7 7"/>
+      </svg>
+      <span>Select</span>
+    </button>
+    <button class="btn btn-secondary" id="btnSettings" onclick="window.location.href='/settings'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/>
+        <circle cx="12" cy="12" r="5"/>
+      </svg>
+      Settings
+    </button>
+    <button class="btn btn-secondary" id="btnAbout" onclick="window.location.href='/about'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 8v4"/>
+        <circle cx="12" cy="16" r="1"/>
+      </svg>
+      About
+    </button>
+    <button class="btn btn-primary" id="btnAddGroup">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      New Group
+    </button>
+    <input type="file" id="fileInput" accept=".html" style="display:none" />
+  </div>
+</header>
+
+<!-- ── Main content ─────────────────────────────────────────────────────── -->
+<main id="main">
+  <div id="emptyState" class="empty-state" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+    </svg>
+    <p>No bookmarks yet.</p>
+    <p>Import a JSON file or create a new group to get started.</p>
+  </div>
+  <div id="noResults" class="empty-state" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <p>No bookmarks match your search.</p>
+  </div>
+  <div id="groupsContainer"></div>
+</main>
+
+<!-- ── Toast ────────────────────────────────────────────────────────────── -->
+<div id="toast" class="toast"></div>
+
+<!-- ── Modal: Add/Edit Bookmark ─────────────────────────────────────────── -->
+<div id="modalBookmark" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalBookmarkTitle">Add Bookmark</h2>
+      <button class="btn-icon modal-close" data-modal="modalBookmark">✕</button>
+    </div>
+    <form id="formBookmark">
+      <input type="hidden" id="bmId" />
+      <div class="form-group">
+        <label for="bmTitle">Title <span class="required">*</span></label>
+        <input type="text" id="bmTitle" required placeholder="e.g. GitHub" />
+      </div>
+      <div class="form-group">
+        <label for="bmUrl">URL <span class="required">*</span></label>
+        <input type="url" id="bmUrl" required placeholder="https://example.com" />
+      </div>
+      <div class="form-group">
+        <label for="bmGroup">Group <span class="required">*</span></label>
+        <select id="bmGroup" required></select>
+      </div>
+      <div class="form-group">
+        <label for="bmIcon">Icon URL or base64 <span class="hint">(optional)</span></label>
+        <input type="text" id="bmIcon" placeholder="https://… or data:image/png;base64,…" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modal-close" data-modal="modalBookmark">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="bmSubmit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Modal: Add/Rename Group ──────────────────────────────────────────── -->
+<div id="modalGroup" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalGroupTitle">New Group</h2>
+      <button class="btn-icon modal-close" data-modal="modalGroup">✕</button>
+    </div>
+    <form id="formGroup">
+      <input type="hidden" id="grpId" />
+      <div class="form-group">
+        <label for="grpName">Group Name <span class="required">*</span></label>
+        <input type="text" id="grpName" required placeholder="e.g. Work" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modal-close" data-modal="modalGroup">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Modal: Move Selected Bookmarks ─────────────────────────────────────── -->
+<div id="modalMoveSelected" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Move selected bookmarks</h2>
+      <button class="btn-icon modal-close" data-modal="modalMoveSelected">✕</button>
+    </div>
+    <form id="formMoveSelected">
+      <input type="hidden" id="moveSourceGroupId" />
+      <p id="moveSelectedCount" style="margin:.5rem 0 1rem; color: var(--text);">0 bookmarks selected</p>
+      <div class="form-group">
+        <label for="moveTargetGroup">Move to group <span class="required">*</span></label>
+        <select id="moveTargetGroup" required></select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modal-close" data-modal="modalMoveSelected">Cancel</button>
+        <button type="submit" class="btn btn-primary">Move</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Modal: Confirm Delete ─────────────────────────────────────────────── -->
+<div id="modalConfirm" class="modal-overlay" style="display:none">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2>Confirm Delete</h2>
+      <button class="btn-icon modal-close" data-modal="modalConfirm">✕</button>
+    </div>
+    <p id="confirmMsg" style="margin:1rem 0 0;color:var(--text-secondary)"></p>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close" data-modal="modalConfirm">Cancel</button>
+      <button class="btn btn-danger" id="confirmOk">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- SortableJS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
