@@ -15,6 +15,15 @@ app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16 MB max upload
 
 db = SQLAlchemy(app)
 
+_db_initialized = False
+
+@app.before_request
+def initialize_database():
+    global _db_initialized
+    if not _db_initialized:
+        db.create_all()
+        _db_initialized = True
+
 
 # ---------------------------------------------------------------------------
 # Models
