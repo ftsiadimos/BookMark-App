@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookmark Manager</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+    .page {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      margin-bottom: 0.5rem;
+      font-size: clamp(2.5rem, 3.5vw, 3.5rem);
+      letter-spacing: -0.05em;
+    }
+    p.lead {
+      max-width: 34rem;
+      margin: 0.5rem 0 1.5rem;
+      color: #475569;
+      font-size: 1.1rem;
+    }
+    .cards {
+      display: grid;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.04);
+    }
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      font-size: 1.2rem;
+    }
+    .card ul {
+      padding-left: 1.25rem;
+      margin: 0;
+    }
+    .card li {
+      margin-bottom: 0.5rem;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 2rem;
+    }
+    .button {
+      background: #2563eb;
+      color: white;
+      text-decoration: none;
+      padding: 0.9rem 1.35rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    .button.secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e2e8f0;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>Bookmark Manager</h1>
+    <p class="lead">A lightweight Flask bookmark manager with browser export import, searchable tiles, groups, drag-and-drop reordering, and Docker support.</p>
+
+    <div class="cards">
+      <section class="card">
+        <h2>Key features</h2>
+        <ul>
+          <li>Import Netscape-format bookmark HTML files from browsers</li>
+          <li>Organize bookmarks into groups and searchable tile-style UI</li>
+          <li>Add, edit, delete, reorder, and bulk-manage bookmarks</li>
+          <li>Export backup JSON, clean duplicates, and remove empty groups</li>
+          <li>Runs in Docker and Docker Compose for easy deployment</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Get started</h2>
+        <ul>
+          <li>Run locally with Python and Flask</li>
+          <li>Use the Settings page to import and export bookmarks</li>
+          <li>Open the app at <strong>http://127.0.0.1:7101</strong></li>
+          <li>Build and run with Docker using <code>docker compose up --build</code></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Repository</h2>
+        <p>The source code includes the Flask app, templates, static assets, and container configuration for easy deployment.</p>
+      </section>
+    </div>
+
+    <div class="buttons">
+      <a class="button" href="https://github.com/ftsiadimos/BookMark-App">View on GitHub</a>
+      <a class="button secondary" href="../README.md">Read the project README</a>
+    </div>
+
+    <footer>
+      <p>Docs site generated from the project's `docs/` folder for GitHub Pages.</p>
+    </footer>
+  </main>
+</body>
+</html>
