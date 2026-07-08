@@ -81,7 +81,7 @@ function faviconEl(bookmark) {
     const domain = new URL(bookmark.url).hostname;
     const img = document.createElement("img");
     img.className = "tile-favicon";
-    img.src = `https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(domain)}`;
+    img.src = `https://www.google.com/s2/favicons?sz=128&domain=${encodeURIComponent(domain)}`;
     img.alt = "";
     img.onerror = () => img.replaceWith(letterAvatar(bookmark.title));
     return img;

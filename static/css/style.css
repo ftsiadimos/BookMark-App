@@ -196,8 +196,8 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1rem .75rem .75rem;
-  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  padding: .75rem .75rem .6rem;
+  display: flex; flex-direction: column; align-items: center; gap: .4rem;
   cursor: pointer;
   transition: background var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition);
   text-decoration: none;
@@ -242,12 +242,12 @@ body {
 .tile:hover .tile-actions { opacity: 1; }
 
 .tile-favicon {
-  width: 36px; height: 36px; border-radius: 8px;
+  width: 20px; height: 20px; border-radius: 5px;
   object-fit: contain; flex-shrink: 0;
   background: var(--bg);
 }
 .tile-favicon-letter {
-  width: 36px; height: 36px; border-radius: 8px;
+  width: 20px; height: 20px; border-radius: 5px;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.1rem; font-weight: 700; color: #fff; flex-shrink: 0;
 }
